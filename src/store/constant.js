@@ -1,5 +1,5 @@
-const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
-// const apiEndpoint = 'https://api.cvxhq.com';
+// const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
+const apiEndpoint = 'https://api.cvxhq.com';
 const apiVersion = 'api/v1';
 export const baseURL = `${apiEndpoint}/${apiVersion}`;
 // export const baseURL = `${apiEndpoint}`;

@@ -4,7 +4,7 @@ import { useOffersStore } from '../../../store/features/offers/useOffersStore';
 import { Spinner } from '../../shared';
 import { MapLocationSkeleton } from '../../shared/Skeleton/DashboardSkelton';
 
-export const MapLocations = () => {
+export const MapLocations = ({ title = true }) => {
   const offersStore = useOffersStore();
 
   useEffect(() => {
@@ -16,9 +16,11 @@ export const MapLocations = () => {
   }
   return (
     <div>
-      <div className='py-6'>
-        <h3 className='text-xl font-bold  mb-1'>Geographic Distribution</h3>
-      </div>
+      {title && (
+        <div className='py-6'>
+          <h3 className='text-xl font-bold mb-1'>Geographic Distribution</h3>
+        </div>
+      )}
 
       <Map locations={offersStore?.list?.data} />
     </div>

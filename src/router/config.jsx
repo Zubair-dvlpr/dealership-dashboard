@@ -15,12 +15,20 @@ import { Dashboard } from '../panel/Dashboard';
 import { Appointments } from '../panel/Appointments';
 import { OffersHeatmap } from '../panel/OffersHeatMap';
 import { Performance } from '../panel/Performance';
+import Homepage from '../panel/Homepage/Index';
+import OffersHeatmapIntelligence from '../panel/OffersHeatmapIntelligence/Index';
 
 // SIDE MENU ROUTES
 export const sideMenuRoutes = [
   {
     path: '/dashboard',
     text: 'Dashboard',
+    icon: Home,
+    activeIcon: Home
+  },
+  {
+    path: '/homepage',
+    text: 'Homepage',
     icon: Home,
     activeIcon: Home
   },
@@ -53,6 +61,12 @@ export const sideMenuRoutes = [
     text: 'Rooftop Performance',
     icon: UserStar,
     activeIcon: UserStar
+  },
+  {
+    path: '/OffersHeatmapIntelligence',
+    text: 'Ofr Htmp Intelligence',
+    icon: UserStar,
+    activeIcon: UserStar
   }
 ];
 
@@ -64,6 +78,18 @@ export const privateRoutes = [
     moduleName: 'Dashboard  ',
     headerText: 'Dashboard  ',
     element: <Dashboard />
+  },
+  {
+    path: '/homepage',
+    moduleName: 'Home Page',
+    headerText: 'Home Page',
+    element: <Homepage />
+  },
+  {
+    path: '/OffersHeatmapIntelligence',
+    moduleName: 'Offers Heatmap Intelligence',
+    headerText: 'Home Page',
+    element: <OffersHeatmapIntelligence />
   },
   {
     path: '/license',
@@ -103,5 +129,10 @@ export const publicRoutes = [
     path: '/login',
     moduleName: 'Authentication',
     element: <Login />
-  }
+  },{
+    path: '/dashboard',
+    moduleName: 'Dashboard  ',
+    headerText: 'Dashboard  ',
+    element: <Dashboard />
+  },
 ];
