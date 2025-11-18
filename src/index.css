@@ -1,0 +1,89 @@
+@import url('https://fonts.googleapis.com/css2?family=Antonio:wght@100..700&family=Baskervville:ital@0;1&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
+@import 'tailwindcss';
+:root {
+  font-family: 'Nunito Sans', sans-serif;
+  background: radial-gradient(1200px 900px at 70% 20%, #0c1220 0%, #0b0f14 55%, #080b10 100%);
+  color: #e6edf3 !important;
+}
+
+.bg-custom {
+  background: radial-gradient(1200px 900px at 70% 20%, #0c1220 0%, #0b0f14 55%, #080b10 100%);
+}
+
+@theme {
+  --color-app: radial-gradient(1200px 900px at 70% 20%, #0c1220 0%, #0b0f14 55%, #080b10 100%);
+  --color-dark: #0f1520cc;
+  --color-panel: #1e2a3a;
+  --color-border: #1e2a3a;
+  --color-ink: #e6edf3;
+  --color-muted: #94a3b8;
+  --color-pink: #ff2d7a;
+  --color-electric: #4f46e5;
+  --color-blue: #0c1220;
+}
+
+.Toastify__toast {
+  background-color: var(--color-panel) !important;
+  color: var(--color-ink) !important;
+}
+
+.Toastify__close-button.Toastify__close-button--light {
+  color: var(--color-ink) !important;
+}
+
+#root {
+  scrollbar-color: #f1f1f1;
+  scrollbar-width: thin;
+}
+
+#root:-webkit-scrollbar {
+  width: 5px;
+}
+
+#root:-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+#root:-webkit-scrollbar-thumb {
+  background: rgba(219, 214, 214, 0.5);
+}
+
+/* width */
+::-webkit-scrollbar {
+  height: 5px;
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgba(219, 214, 214, 0.5);
+  border-width: 20px;
+  border-radius: 99999px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(194, 189, 189, 0.5);
+}
+
+/* GOOGLE MAPS CLASSES */
+.gm-style .gm-style-iw-c {
+  /* background-color: var(--color-panel) !important; */
+}
+
+/* .gm-style .gm-style-iw-d div {
+  background-color: var(--color-panel) !important;
+} */
+
+.gm-style-iw-chr button {
+  width: 40px !important;
+  height: max-content !important;
+  position: absolute !important;
+  right: 0 !important;
+  color: #e6edf3;
+}
