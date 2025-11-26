@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { offersList } from './offersFns';
+import { offersBookedList, offersGeneratedList } from './offersFns';
 import { formatPhoneNumber, formatTime } from '../../../utils/utils';
 
 export const useOffersStore = create(set => ({
@@ -20,13 +20,15 @@ export const useOffersStore = create(set => ({
       error: null
     }
   },
-  offersListing: async () => {
+  offersBookedListing: async () => {
     set(prev => ({ list: { ...prev?.list, loading: true } }));
 
-    const _data = await offersList();
+    const _data = await offersBookedList();
+
     // CHECK
     if (_data?.success) {
-      const mappedData = _data?.data?.map((item, index) => ({
+      console.log('Offers Store List Response:', _data);
+      const mappedData = _data?.data?.offers.map((item, index) => ({
         id: index + 1,
         name: item?.name,
         domain: item?.license?.domain,
@@ -36,7 +38,7 @@ export const useOffersStore = create(set => ({
 
         // Original createdAt time
         time: formatTime(item?.createdAt),
-
+        vin: item?.vin,
         phone: formatPhoneNumber(item?.phone) || item?.phone,
         vehicle: item?.vehicle,
         kilometres: item?.kilometres,
@@ -48,7 +50,9 @@ export const useOffersStore = create(set => ({
         shortLink: item?.shortLink,
         creationDate: item?.createdAt,
         median: item?.median,
-
+        source: item?.license.platform,
+        appointmentType: item?.appointmentType || "In-Person",
+        appointmentStatus: item?.appointmentStatus || "Pending",
         // ⭐ NEW FIELDS YOU ARE MISSING ⭐
         iaPurchased: item?.iaPurchased || false,
         purchasedDetails: item?.purchasedDetails || {},
@@ -64,7 +68,76 @@ export const useOffersStore = create(set => ({
         completeItem: item
       }));
 
-      set(prev => ({ list: { ...prev?.list, data: mappedData, loading: false, error: null } }));
+      // ⭐ NEW: Save stats
+      const mappedStats = {
+        today: _data?.data?.stats?.appointmentsToday || 0,
+        thisWeek: _data?.data?.stats?.appointmentsThisWeek || 0,
+        thisMonth: _data?.data?.stats?.appointmentsThisMonth || 0,
+        completionRate: Number(_data?.data?.stats?.completionRate || 0)
+      };
+
+      set(prev => ({ list: { ...prev?.list, data: mappedData, loading: false, error: null }, stats: mappedStats }));
+    } else {
+      set(prev => ({ list: { ...prev?.list, error: error?.message, loading: false } }));
+    }
+  },
+  offersGeneratedListing: async () => {
+    set(prev => ({ list: { ...prev?.list, loading: true } }));
+
+    const _data = await offersGeneratedList();
+
+    // CHECK
+    if (_data?.success) {
+      console.log('Offers Store List Response:', _data);
+      const mappedData = _data?.data?.offers.map((item, index) => ({
+        id: index + 1,
+        name: item?.name,
+        domain: item?.license?.domain,
+
+        // Correct Submitted date
+        submittedDate: item?.submittedDate,
+
+        // Original createdAt time
+        time: formatTime(item?.createdAt),
+        vin: item?.vin,
+        phone: formatPhoneNumber(item?.phone) || item?.phone,
+        vehicle: item?.vehicle,
+        kilometres: item?.kilometres,
+        finalOffer: item?.finalOffer,
+        profit: item?.profit,
+        deductions: item?.deductions,
+        expires: item?.expires,
+        postalCode: item?.postalCode,
+        shortLink: item?.shortLink,
+        creationDate: item?.createdAt,
+        median: item?.median,
+        source: item?.license.platform,
+        appointmentType: item?.appointmentType || "In-Person",
+        appointmentStatus: item?.appointmentStatus || "Pending",
+        // ⭐ NEW FIELDS YOU ARE MISSING ⭐
+        iaPurchased: item?.iaPurchased || false,
+        purchasedDetails: item?.purchasedDetails || {},
+
+        booking_datetime: item?.purchasedDetails?.booking_datetime || null,
+        booking_date: item?.purchasedDetails?.booking_date || null,
+        booking_time: item?.purchasedDetails?.booking_time || null,
+
+        // optional (for table)
+        pickupType: item?.pickupType || "Pickup",   // or null
+        transportStatus: item?.transportStatus || "Pending",
+
+        completeItem: item
+      }));
+
+      // ⭐ NEW: Save stats
+      const mappedStats = {
+        today: _data?.data?.stats?.appointmentsToday || 0,
+        thisWeek: _data?.data?.stats?.appointmentsThisWeek || 0,
+        thisMonth: _data?.data?.stats?.appointmentsThisMonth || 0,
+        completionRate: Number(_data?.data?.stats?.completionRate || 0)
+      };
+
+      set(prev => ({ list: { ...prev?.list, data: mappedData, loading: false, error: null }, stats: mappedStats }));
     } else {
       set(prev => ({ list: { ...prev?.list, error: error?.message, loading: false } }));
     }
@@ -73,7 +146,7 @@ export const useOffersStore = create(set => ({
   offersListWithFilters: async params => {
     set(prev => ({ heatMap: { ...prev?.heatMap, loading: true } }));
 
-    const _data = await offersList(params);
+    const _data = await offersBookedList(params);
     // CHECK
     if (_data?.success) {
       set(prev => ({

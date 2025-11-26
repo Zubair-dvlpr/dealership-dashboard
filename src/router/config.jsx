@@ -26,12 +26,12 @@ export const sideMenuRoutes = [
     icon: Home,
     activeIcon: Home
   },
-  {
-    path: '/homepage',
-    text: 'Homepage',
-    icon: Home,
-    activeIcon: Home
-  },
+  // {
+  //   path: '/homepage',
+  //   text: 'Homepage',
+  //   icon: Home,
+  //   activeIcon: Home
+  // },
   {
     path: '/license',
     text: 'License',
@@ -77,12 +77,6 @@ export const privateRoutes = [
     path: '/dashboard',
     moduleName: 'Dashboard  ',
     headerText: 'Dashboard  ',
-    element: <Dashboard />
-  },
-  {
-    path: '/homepage',
-    moduleName: 'Home Page',
-    headerText: 'Home Page',
     element: <Homepage />
   },
   {
