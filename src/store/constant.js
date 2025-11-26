@@ -1,5 +1,6 @@
 // const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
-const apiEndpoint = 'https://api.cvxhq.com';
+// const apiEndpoint = 'https://api.cvxhq.com';
+const apiEndpoint = 'http://localhost:8000';
 const apiVersion = 'api/v1';
 export const baseURL = `${apiEndpoint}/${apiVersion}`;
 // export const baseURL = `${apiEndpoint}`;
@@ -22,5 +23,12 @@ export const endpoints = {
   dependency: `${baseURL}/dependency`,
 
   // ANALYTICS
-  getAnalytics: `${baseURL}/dashboard/analytics`
+  getAnalytics: `${baseURL}/dashboard/analytics`,
+
+  // STRIPE
+  addStripeCard: `${baseURL}/customer/stripe/add-card`,
+
+  getStripeCard: `${baseURL}/customer/stripe/get-card`,
+
+  removeStripeCard: `${baseURL}/customer/stripe/remove-card`
 };

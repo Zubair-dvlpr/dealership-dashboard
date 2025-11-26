@@ -17,6 +17,7 @@ import { OffersHeatmap } from '../panel/OffersHeatMap';
 import { Performance } from '../panel/Performance';
 import Homepage from '../panel/Homepage/Index';
 import OffersHeatmapIntelligence from '../panel/OffersHeatmapIntelligence/Index';
+import { Profile } from '../panel/Profile';
 
 // SIDE MENU ROUTES
 export const sideMenuRoutes = [
@@ -120,6 +121,12 @@ export const privateRoutes = [
     moduleName: 'Rooftop Performance',
     headerText: 'Rooftop Performance',
     element: <Performance />
+  },
+  {
+    path: '/profile',
+    moduleName: 'Profile',
+    headerText: 'Profile',
+    element: <Profile />
   }
 ];
 
@@ -129,10 +136,11 @@ export const publicRoutes = [
     path: '/login',
     moduleName: 'Authentication',
     element: <Login />
-  },{
+  },
+  {
     path: '/dashboard',
     moduleName: 'Dashboard  ',
     headerText: 'Dashboard  ',
     element: <Dashboard />
-  },
+  }
 ];

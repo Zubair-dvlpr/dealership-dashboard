@@ -42,6 +42,7 @@ export const formatPrice = (
 };
 
 export const extractDomain = url => {
+  url = url || 'examle.com';
   const match = url?.match(/^(https?:\/\/[^/]+?\.(com|net|org|io|ai|dev|pk|us|url))/i);
   return match ? match[0] : url;
 };
