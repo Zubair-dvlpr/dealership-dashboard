@@ -140,7 +140,6 @@ export default function BillingTabWrapper() {
               )}
             </>
           )}
-          <PaymentCard />
         </div>
       </div>
     </Elements>
@@ -253,75 +252,63 @@ function AddCardForm({ onSuccess, onCancel }) {
   );
 }
 
-const dummyOffers = [
-  { id: 1, title: 'Premium Offer', price: 99, status: 'available', defaultCardId: 'pm_card_visa' },
-  {
-    id: 2,
-    title: 'Basic Offer',
-    price: 49,
-    status: 'available',
-    defaultCardId: 'pm_card_mastercard'
-  },
-  { id: 3, title: 'Special Offer', price: 199, status: 'purchased', defaultCardId: 'pm_card_amex' }
-];
+// function PaymentCard({ card, isDefault, onDelete, onSetDefault, customerId }) {
+//   const stripe = useStripe();
+//   const elements = useElements();
 
-function PaymentCard({ card, isDefault, onDelete, onSetDefault, customerId }) {
-  const stripe = useStripe();
-  const elements = useElements();
+//   const handlePurchase = async () => {
+//     if (!stripe) return;
+//     const _data = await createPaymentIntent();
+//     if (_data.success) {
+//       // const result = await stripe.confirmCardPayment(_data?.data?.clientSecret);
+//       const result = await stripe.confirmCardPayment(_data?.data?.clientSecret, {
+//         payment_method: {
+//           card: elements.getElement(PaymentElement)
+//         }
+//         // optional: billing details
+//         // billing_details: { name: 'Customer Name' },
+//       });
+//       console.log('result', result);
+//       if (result.error) {
+//         alert(result.error.message);
+//       } else if (result.paymentIntent.status === 'succeeded') {
+//         alert('Payment Successful! Offer purchased.');
+//         // ✅ Update offer status in your DB here
+//       }
+//     }
+//   };
 
-  const handlePurchase = async () => {
-    if (!stripe) return;
-    const _data = await createPaymentIntent();
-    if (_data.success) {
-      // const result = await stripe.confirmCardPayment(_data?.data?.clientSecret);
-      const result = await stripe.confirmCardPayment(_data?.data?.clientSecret, {
-        payment_method: {
-          card: elements.getElement(PaymentElement)
-        }
-        // optional: billing details
-        // billing_details: { name: 'Customer Name' },
-      });
-      console.log('result', result);
-      if (result.error) {
-        alert(result.error.message);
-      } else if (result.paymentIntent.status === 'succeeded') {
-        alert('Payment Successful! Offer purchased.');
-        // ✅ Update offer status in your DB here
-      }
-    }
-  };
-
-  return (
-    <table className='w-full text-white border border-gray-700'>
-      <thead>
-        <tr>
-          <th className='border px-4 py-2'>Offer</th>
-          <th className='border px-4 py-2'>Price</th>
-          <th className='border px-4 py-2'>Status</th>
-          <th className='border px-4 py-2'>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        {dummyOffers.map(offer => (
-          <tr key={offer.id}>
-            <td className='border px-4 py-2'>{offer.title}</td>
-            <td className='border px-4 py-2'>${offer.price}</td>
-            <td className='border px-4 py-2'>{offer.status}</td>
-            <td className='border px-4 py-2'>
-              {offer.status !== 'purchased' ? (
-                <button
-                  onClick={() => handlePurchase(offer)}
-                  className='bg-green-500 px-3 py-1 rounded text-black'
-                >
-                  Purchase
-                </button>
-              ) : (
-                <span className='text-gray-400'>Purchased</span>
-              )}
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  );
-}
+//   return (
+//     <table className='w-full text-white border border-gray-700'>
+//       <thead>
+//         <tr>
+//           <th className='border px-4 py-2'>Offer</th>
+//           <th className='border px-4 py-2'>Price</th>
+//           <th className='border px-4 py-2'>Status</th>
+//           <th className='border px-4 py-2'>Action</th>
+//         </tr>
+//       </thead>
+//       <tbody>
+//         {dummyOffers.map(offer => (
+//           <tr key={offer.id}>
+//             <td className='border px-4 py-2'>{offer.title}</td>
+//             <td className='border px-4 py-2'>${offer.price}</td>
+//             <td className='border px-4 py-2'>{offer.status}</td>
+//             <td className='border px-4 py-2'>
+//               {offer.status !== 'purchased' ? (
+//                 <button
+//                   onClick={() => handlePurchase(offer)}
+//                   className='bg-green-500 px-3 py-1 rounded text-black'
+//                 >
+//                   Purchase
+//                 </button>
+//               ) : (
+//                 <span className='text-gray-400'>Purchased</span>
+//               )}
+//             </td>
+//           </tr>
+//         ))}
+//       </tbody>
+//     </table>
+//   );
+// }
