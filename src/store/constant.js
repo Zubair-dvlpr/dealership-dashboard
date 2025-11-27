@@ -15,7 +15,8 @@ export const endpoints = {
   addLicenseKey: `${baseURL}/liscense/generate-key`,
   deleteLicenseKey: `${baseURL}/liscense/delete-key`,
   // OFFERS
-  offersList: `${baseURL}/offer/list`,
+  generatedList: `${baseURL}/offer/generated/list`,
+  bookedList: `${baseURL}/offer/booked/list`,
 
   heatmapoffersList: `${baseURL}/offer/list`,
 
