@@ -30,3 +30,13 @@ export async function removeStripeCard(params) {
     return { success: false, error: error?.response?.data?.error || 'Something went wrong' };
   }
 }
+
+// CREATE PAYMENT INTENT
+export async function createPaymentIntent(params) {
+  try {
+    const response = await axiosInstance.post(`${endpoints.createPaymentIntentStripe}`, params);
+    return { success: true, data: response?.data?.data };
+  } catch (error) {
+    return { success: false, error: error?.response?.data?.error || 'Something went wrong' };
+  }
+}

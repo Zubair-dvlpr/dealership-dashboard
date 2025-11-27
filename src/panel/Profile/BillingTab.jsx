@@ -3,6 +3,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import {
   addStripeCard,
+  createPaymentIntent,
   getStripeCard,
   removeStripeCard
 } from '../../store/features/stripe/stripeFns';
@@ -83,47 +84,47 @@ export default function BillingTabWrapper() {
   };
 
   return (
-    <div className='w-full flex justify-center py-10  min-h-max'>
-      <div className='w-full max-w-lg p-6 rounded-xl  shadow-xl border border-[#1C2030]'>
-        <h2 className='text-2xl text-white mb-6 font-bold'>Payment Methods</h2>
+    <Elements options={{ appearance }} stripe={stripePromise}>
+      <div className='w-full flex justify-center py-10  min-h-max'>
+        <div className='w-full max-w-lg p-6 rounded-xl  shadow-xl border border-[#1C2030]'>
+          <h2 className='text-2xl text-white mb-6 font-bold'>Payment Methods</h2>
 
-        {/* Loading State */}
-        {loading ? (
-          <div className='text-center text-gray-400 py-8'>Loading your cards...</div>
-        ) : (
-          <>
-            {/* Saved Cards List */}
-            <div className='space-y-4 mb-8'>
-              {hasCards ? (
-                cards.map(pm => (
-                  <SavedCard
-                    key={pm.id}
-                    card={pm}
-                    isDefault={pm.is_default}
-                    onDelete={() => removeCard(pm.id)}
-                    onSetDefault={async () => {
-                      // await setDefaultCard(pm.id);
-                      fetchCards();
-                    }}
-                  />
-                ))
+          {/* Loading State */}
+          {loading ? (
+            <div className='text-center text-gray-400 py-8'>Loading your cards...</div>
+          ) : (
+            <>
+              {/* Saved Cards List */}
+              <div className='space-y-4 mb-8'>
+                {hasCards ? (
+                  cards.map(pm => (
+                    <SavedCard
+                      key={pm.id}
+                      card={pm}
+                      isDefault={pm.is_default}
+                      onDelete={() => removeCard(pm.id)}
+                      onSetDefault={async () => {
+                        // await setDefaultCard(pm.id);
+                        fetchCards();
+                      }}
+                    />
+                  ))
+                ) : (
+                  <p className='text-gray-400 text-center py-8'>No payment methods added yet.</p>
+                )}
+              </div>
+
+              {/* Add New Card Section */}
+              {!addingNewCard ? (
+                <button
+                  onClick={createSetupIntent}
+                  disabled={processing}
+                  className='w-full py-4 border-2 border-dashed border-[#9BE7B4] rounded-xl text-[#9BE7B4] font-semibold hover:bg-[#9BE7B4]/10 transition'
+                >
+                  {processing ? 'Preparing...' : '+ Add New Card'}
+                </button>
               ) : (
-                <p className='text-gray-400 text-center py-8'>No payment methods added yet.</p>
-              )}
-            </div>
-
-            {/* Add New Card Section */}
-            {!addingNewCard ? (
-              <button
-                onClick={createSetupIntent}
-                disabled={processing}
-                className='w-full py-4 border-2 border-dashed border-[#9BE7B4] rounded-xl text-[#9BE7B4] font-semibold hover:bg-[#9BE7B4]/10 transition'
-              >
-                {processing ? 'Preparing...' : '+ Add New Card'}
-              </button>
-            ) : (
-              clientSecret && (
-                <Elements options={{ clientSecret, appearance }} stripe={stripePromise}>
+                clientSecret && (
                   <AddCardForm
                     onSuccess={() => {
                       setAddingNewCard(false);
@@ -135,13 +136,14 @@ export default function BillingTabWrapper() {
                       setClientSecret('');
                     }}
                   />
-                </Elements>
-              )
-            )}
-          </>
-        )}
+                )
+              )}
+            </>
+          )}
+          <PaymentCard />
+        </div>
       </div>
-    </div>
+    </Elements>
   );
 }
 
@@ -150,32 +152,37 @@ function SavedCard({ card, isDefault, onDelete, onSetDefault }) {
   return (
     <div className='bg-[#1A1E2E] p-5 rounded-xl border border-[#2A2F45] flex items-center justify-between'>
       <div className='flex items-center gap-4'>
-        <div className='text-3xl'>
+        {/* Official Brand Logo */}
+        <div className='text-2xl'>
           {card?.brand === 'visa' && 'Visa'}
           {card?.brand === 'mastercard' && 'MasterCard'}
           {card?.brand === 'amex' && 'Amex'}
           {!['visa', 'mastercard', 'amex'].includes(card?.brand) && 'Card'}
         </div>
+
         <div className='text-white'>
-          <p className='font-semibold'>•••• •••• •••• {card?.last4}</p>
+          <p className='font-semibold capitalize'>
+            {card?.brand} •••• {card?.last4}
+          </p>
           <p className='text-sm text-gray-400'>
-            Expires {card?.exp_month.toString().padStart(2, '0')}/{card?.exp_year}
+            Expires {String(card?.exp_month).padStart(2, '0')}/{card?.exp_year}
           </p>
         </div>
-        {isDefault && (
-          <span className='ml-3 px-3 py-1 bg-green-500/20 text-green-400 text-xs rounded-full'>
+
+        {/* {isDefault && (
+          <span className='ml-3 px-3 py-1 bg-green-500/20 text-green-400 text-xs rounded-full font-medium'>
             Default
           </span>
-        )}
+        )} */}
       </div>
 
-      <div className='flex gap-2'>
+      <div className='flex gap-3 text-sm'>
         {/* {!isDefault && (
-          <button onClick={onSetDefault} className='text-sm text-[#9BE7B4] hover:underline'>
+          <button onClick={onSetDefault} className='text-[#9BE7B4] hover:underline'>
             Set Default
           </button>
         )} */}
-        <button onClick={onDelete} className='text-sm text-red-400 hover:underline'>
+        <button onClick={onDelete} className='text-red-400 hover:underline'>
           Remove
         </button>
       </div>
@@ -243,5 +250,78 @@ function AddCardForm({ onSuccess, onCancel }) {
         </button>
       </div>
     </form>
+  );
+}
+
+const dummyOffers = [
+  { id: 1, title: 'Premium Offer', price: 99, status: 'available', defaultCardId: 'pm_card_visa' },
+  {
+    id: 2,
+    title: 'Basic Offer',
+    price: 49,
+    status: 'available',
+    defaultCardId: 'pm_card_mastercard'
+  },
+  { id: 3, title: 'Special Offer', price: 199, status: 'purchased', defaultCardId: 'pm_card_amex' }
+];
+
+function PaymentCard({ card, isDefault, onDelete, onSetDefault, customerId }) {
+  const stripe = useStripe();
+  const elements = useElements();
+
+  const handlePurchase = async () => {
+    if (!stripe) return;
+    const _data = await createPaymentIntent();
+    if (_data.success) {
+      // const result = await stripe.confirmCardPayment(_data?.data?.clientSecret);
+      const result = await stripe.confirmCardPayment(_data?.data?.clientSecret, {
+        payment_method: {
+          card: elements.getElement(PaymentElement)
+        }
+        // optional: billing details
+        // billing_details: { name: 'Customer Name' },
+      });
+      console.log('result', result);
+      if (result.error) {
+        alert(result.error.message);
+      } else if (result.paymentIntent.status === 'succeeded') {
+        alert('Payment Successful! Offer purchased.');
+        // ✅ Update offer status in your DB here
+      }
+    }
+  };
+
+  return (
+    <table className='w-full text-white border border-gray-700'>
+      <thead>
+        <tr>
+          <th className='border px-4 py-2'>Offer</th>
+          <th className='border px-4 py-2'>Price</th>
+          <th className='border px-4 py-2'>Status</th>
+          <th className='border px-4 py-2'>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {dummyOffers.map(offer => (
+          <tr key={offer.id}>
+            <td className='border px-4 py-2'>{offer.title}</td>
+            <td className='border px-4 py-2'>${offer.price}</td>
+            <td className='border px-4 py-2'>{offer.status}</td>
+            <td className='border px-4 py-2'>
+              {offer.status !== 'purchased' ? (
+                <button
+                  onClick={() => handlePurchase(offer)}
+                  className='bg-green-500 px-3 py-1 rounded text-black'
+                >
+                  Purchase
+                </button>
+              ) : (
+                <span className='text-gray-400'>Purchased</span>
+              )}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 }

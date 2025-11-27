@@ -30,5 +30,7 @@ export const endpoints = {
 
   getStripeCard: `${baseURL}/customer/stripe/get-card`,
 
-  removeStripeCard: `${baseURL}/customer/stripe/remove-card`
+  removeStripeCard: `${baseURL}/customer/stripe/remove-card`,
+
+  createPaymentIntentStripe: `${baseURL}/customer/stripe/create-payment-intent`
 };
