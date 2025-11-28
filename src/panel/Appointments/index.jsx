@@ -13,6 +13,7 @@ import { useOffersStore } from '../../store/features/offers/useOffersStore';
 import TableSkeleton from '../../components/shared/Skeleton/TableSkeleton';
 import { StatsCards } from '../../components/BookedaAppointments/Stats';
 import { UpdateOfferModal } from './utils';
+import { AnalyticsSkelton } from '../../components/shared/Skeleton/DashboardSkelton';
 
 export const Appointments = () => {
   const offersStore = useOffersStore();
@@ -97,12 +98,18 @@ export const Appointments = () => {
     // Add filter logic here
     console.log('Filter:', filter);
   };
+// console.log('row in modal', row);
 
   return (
     <React.Fragment>
       <div className='min-h-screen  text-gray-100'>
         <div className='s mx-auto '>
-          <StatsCards stats={stats} />
+          {offersStore?.list?.loading ? (
+            <AnalyticsSkelton grid={4} />
+          ) : (
+            <StatsCards stats={stats} />
+          )}
+
 
           {/* APPOINTMENTS LIST SECTION */}
           <div className='mb-4'>
@@ -122,11 +129,10 @@ export const Appointments = () => {
                   <button
                     key={filter}
                     onClick={() => handleFilterClick(filter)}
-                    className={`px-3 py-2 rounded-full text-xs border transition-colors ${
-                      activeFilter === filter
+                    className={`px-3 py-2 rounded-full text-xs border transition-colors ${activeFilter === filter
                         ? 'border-green-500 text-green-400 bg-green-900/20'
                         : 'border-gray-600 text-gray-400 bg-gray-800/50 hover:bg-gray-700/50'
-                    }`}
+                      }`}
                   >
                     {filter}
                   </button>
@@ -161,6 +167,7 @@ export const Appointments = () => {
         onClose={() => setOpen({ type: '', data: {} })}
         row={open?.data}
       />
+
     </React.Fragment>
   );
 };

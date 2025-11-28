@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { offersBookedList, offersGeneratedList } from './offersFns';
+import { offersBookedList, offersGeneratedList, updateOfferStatus } from './offersFns';
 import { formatPhoneNumber, formatTime } from '../../../utils/utils';
 
 export const useOffersStore = create(set => ({
@@ -56,7 +56,7 @@ export const useOffersStore = create(set => ({
         // ⭐ NEW FIELDS YOU ARE MISSING ⭐
         iaPurchased: item?.iaPurchased || false,
         purchasedDetails: item?.purchasedDetails || {},
-
+        status: item?.status || "Pending",
         booking_datetime: item?.purchasedDetails?.booking_datetime || null,
         booking_date: item?.purchasedDetails?.booking_date || null,
         booking_time: item?.purchasedDetails?.booking_time || null,
@@ -142,7 +142,29 @@ export const useOffersStore = create(set => ({
       set(prev => ({ list: { ...prev?.list, error: error?.message, loading: false } }));
     }
   },
+  updateStatus: async (offerId, status) => {
+    set({ loading: true });
 
+    const res = await updateOfferStatus(offerId, status);
+
+    if (res.success) {
+      showToast("Status updated successfully", "success");
+
+      // Refresh booked appointments again
+      const booked = await offersBookedList({});
+      set(prev => ({
+        state: {
+          ...prev.state,
+          booked: { ...prev.state.booked, data: booked.data, loading: false }
+        }
+      }));
+
+    } else {
+      showToast("Failed to update status", "error");
+    }
+
+    set({ loading: false });
+  },
   offersListWithFilters: async params => {
     set(prev => ({ heatMap: { ...prev?.heatMap, loading: true } }));
 

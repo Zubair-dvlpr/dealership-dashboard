@@ -38,8 +38,9 @@ export default function BillingTabWrapper() {
     try {
       setProcessing(true);
       const result = await addStripeCard();
+      console.log('SetupIntent Result:', result.data); 
       if (result?.success && result.data?.clientSecret) {
-        setClientSecret(result.data.clientSecret);
+        setClientSecret(result?.data?.clientSecret);
         setAddingNewCard(true);
       } else {
         alert('Failed to initialize card setup. Please try again.');

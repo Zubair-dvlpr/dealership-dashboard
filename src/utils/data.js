@@ -125,7 +125,7 @@ export const appointmentsColumnData = [
   { name: 'pickupType', title: 'PICKUP/DROP-OFF TYPE' },
   { name: 'booking_datetime', title: 'SCHEDULED DATE', sorting: true },
   { name: 'booking_time', title: 'TIME', sorting: true },
-  { name: 'transportStatus', title: 'TRANSPORT STATUS' },
+  { name: 'status', title: 'Status' },
   { name: 'action', title: 'ACTIONS' }
 ];
 
@@ -140,7 +140,7 @@ export const appointmentsTableColumnExtensions = [
   { columnName: 'pickupType', width: 180 },
   { columnName: 'booking_datetime', width: 220 },
   { columnName: 'booking_time', width:80 },
-  { columnName: 'transportStatus', width: 160 },
+  { columnName: 'status', width: 160 },
 
   { columnName: 'action', width: 150 }
 ];
