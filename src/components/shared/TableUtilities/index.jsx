@@ -1,12 +1,13 @@
 import {
   Delete,
   ExternalLink,
+  FilePen,
   Info,
   Mail,
   Phone,
   Settings,
   Trash,
-  User,
+  User
 } from 'lucide-react';
 import Popover from '../Popover';
 import { extractDomain, formatPrice } from '../../../utils/utils';
@@ -14,14 +15,12 @@ import { useState } from 'react';
 import Modal from '../Modal';
 
 // LICENSE STATUS
-export const LicenseStatus = (row) => {
+export const LicenseStatus = row => {
   const isActive = row?.row?.status;
   return (
     <span
       className={`inline-flex items-center px-2 rounded-full text-sm font-medium shadow-sm ${
-        isActive
-          ? 'bg-green-700 border border-panel'
-          : 'bg-yellow-700 border border-panel'
+        isActive ? 'bg-green-700 border border-panel' : 'bg-yellow-700 border border-panel'
       }`}
     >
       {isActive ? 'Activated' : 'Pending'}
@@ -30,15 +29,12 @@ export const LicenseStatus = (row) => {
 };
 
 // LICENSE STATUS
-export const LicenseDate = (row) => {
-  const creationDate = new Date(row?.row?.creationDate).toLocaleDateString(
-    'en-US',
-    {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    }
-  );
+export const LicenseDate = row => {
+  const creationDate = new Date(row?.row?.creationDate).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
   // console.log("row", row.submitted);
   return <span>{creationDate ?? 'N/A'}</span>;
 };
@@ -56,7 +52,7 @@ export const PriceFormate = ({ number }) => {
 };
 
 // LICENSE STATUS
-export const Link = (row) => {
+export const Link = row => {
   if (!row?.row?.shortLink) return <span className='text-gray-400'>N/A</span>;
 
   const shortUrl = extractDomain(row?.row?.shortLink);
@@ -65,20 +61,23 @@ export const Link = (row) => {
       <span className='text-ink'>{shortUrl}</span>
       <ExternalLink
         className='w-5 h-5 cursor-pointer text-gray-600 hover:text-ink'
-        onClick={() =>
-          window.open(row?.row?.shortLink, '_blank', 'noopener,noreferrer')
-        }
+        onClick={() => window.open(row?.row?.shortLink, '_blank', 'noopener,noreferrer')}
       />
     </div>
   );
 };
 // LICENSE STATUS
-export const Action = ({ onDelete, onInfo, row }) => {
+export const Action = ({ onDelete, onInfo, row, isUpdate, onUpdate }) => {
   return (
     <div className='flex gap-4 flex-row-reverse'>
       <button onClick={() => onDelete(row)}>
         <Trash className='size-5 text-red-700 cursor-pointer' />
       </button>
+      {isUpdate && (
+        <button onClick={() => onUpdate(row)}>
+          <FilePen className='size-5  cursor-pointer' />
+        </button>
+      )}
       <button onClick={() => onInfo(row)}>
         <Info className='size-5  cursor-pointer' />
       </button>
@@ -87,7 +86,7 @@ export const Action = ({ onDelete, onInfo, row }) => {
 };
 
 // LICENSE STATUS
-export const TableActions = (row) => {
+export const TableActions = row => {
   return (
     <Popover
       content={<div className='py-6 px-2'>Inprogress</div>}
@@ -100,15 +99,12 @@ export const TableActions = (row) => {
   );
 };
 
-export const ActionInfo = (row) => {
+export const ActionInfo = row => {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <>
       <div className='w-full ml-3'>
-        <Info
-          className='w-5 h-5 text-ink/50 cursor-pointer'
-          onClick={() => setIsOpen(true)}
-        />
+        <Info className='w-5 h-5 text-ink/50 cursor-pointer' onClick={() => setIsOpen(true)} />
       </div>
       <Modal
         isOpen={isOpen}
@@ -148,3 +144,34 @@ export const ActionInfo = (row) => {
     </>
   );
 };
+
+export function Status({ row }) {
+  const status = row?.appointmentStatus?.toLowerCase();
+  const statusConfig = {
+    confirmed: {
+      label: 'Confirmed',
+      className: 'bg-green-900/20 text-green-400 border-green-700'
+    },
+    pending: {
+      label: 'Pending',
+      className: 'bg-yellow-900/20 text-yellow-400 border-yellow-700'
+    },
+    completed: {
+      label: 'Completed',
+      className: 'bg-green-900/30 text-green-300 border-green-600'
+    },
+    noshow: { label: 'No Show', className: 'bg-red-900/20 text-red-400 border-red-700' }
+  };
+  const config = statusConfig[status] || {
+    label: status,
+    className: 'bg-gray-800 text-gray-300 border-gray-600'
+  };
+
+  return (
+    <span
+      className={`inline-flex items-center px-2 py-1 rounded-full text-xs border ${config.className}`}
+    >
+      {config.label}
+    </span>
+  );
+}
