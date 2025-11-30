@@ -1,171 +1,208 @@
-import { useState } from 'react';
-import { Button } from '../shared';
+import { useState } from "react";
+import { Button } from "../shared";
 
 export default function AccountTab() {
-  const [fullName, setFullName] = useState('John Doe');
-  const [email, setEmail] = useState('john@example.com');
-  const [currentPassword, setCurrentPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [showPasswordForm, setShowPasswordForm] = useState(false);
-  const [profileUpdated, setProfileUpdated] = useState(false);
-  const [passwordUpdated, setPasswordUpdated] = useState(false);
-
-  const handleProfileUpdate = e => {
-    e.preventDefault();
-    setProfileUpdated(true);
-    setTimeout(() => setProfileUpdated(false), 3000);
-  };
-
-  const handlePasswordChange = e => {
-    e.preventDefault();
-    if (newPassword !== confirmPassword) {
-      alert('Passwords do not match');
-      return;
-    }
-    setPasswordUpdated(true);
-    setCurrentPassword('');
-    setNewPassword('');
-    setConfirmPassword('');
-    setShowPasswordForm(false);
-    setTimeout(() => setPasswordUpdated(false), 3000);
-  };
+  const [dealerName] = useState("CarBiz"); // locked
+  const [phone, setPhone] = useState("(647)-764-7395");
+  const [email, setEmail] = useState("sales@carbiz.ca");
+  const [address, setAddress] = useState("611 Kingston Rd, Pickering, ON");
+  const [website, setWebsite] = useState("https://carbiz.ca");
+  const [maps, setMaps] = useState("");
+  const [reviews, setReviews] = useState("");
+  const [logo, setLogo] = useState("");
 
   return (
-    <div className='space-y-8'>
-      {/* Profile Details Section */}
-      <div className='bg-card border border-border rounded-lg p-6 sm:p-8'>
-        <h2 className='text-xl font-semibold text-foreground mb-6'>Profile Details</h2>
+    <div className="cvx-page text-gray-100">
 
-        {profileUpdated && (
-          <div className='mb-4 p-4 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm'>
-            Profile updated successfully!
-          </div>
-        )}
+      {/* HEADER */}
+      {/* <div className="mb-6">
+        <h1 className="text-2xl font-semibold text-white">Dealer Settings</h1>
+        <p className="text-sm text-gray-400 max-w-xl mt-1">
+          Manage your dealership profile, branding and CarValueX license.
+          Your dealership name and license key are locked by CarValueX.
+        </p>
+      </div> */}
 
-        <form onSubmit={handleProfileUpdate} className='space-y-6'>
-          {/* Full Name */}
-          <div>
-            <label className='block text-sm font-medium text-foreground mb-2'>Full Name</label>
-            <input
-              type='text'
-              value={fullName}
-              onChange={e => setFullName(e.target.value)}
-              className='w-full px-4 py-2.5 border border-input rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition'
-              placeholder='Enter your full name'
-            />
-          </div>
+      {/* GRID */}
+      <div className="grid grid-cols-1 lg:grid-cols-[2fr_1.3fr] gap-4">
 
-          {/* Email */}
-          <div>
-            <label className='block text-sm font-medium text-foreground mb-2'>Email Address</label>
-            <input
-              type='email'
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              className='w-full px-4 py-2.5 border border-input rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition'
-              placeholder='Enter your email'
-            />
+        {/* LEFT CARD — Dealer Profile */}
+        <div className="">
+          <div className="mb-4">
+            <div className="text-2xl font-semibold text-white">
+              Dealer Profile
+            </div>
+            <div className="text-base text-gray-400 max-w-xl mt-1">
+              This information powers your branded instant-offer pages,
+              texts and emails.
+            </div>
           </div>
 
-          {/* Save Button */}
-          <div className='flex gap-3 pt-4'>
-            <Button type='submit'>Save Changes</Button>
+          <div className="flex flex-col gap-4">
+
+            {/* Locked Dealership Name */}
+            <div>
+              <label className="text-base text-gray-300">
+                Dealership Name <span className="text-gray-500">(locked)</span>
+              </label>
+              <input
+                type="text"
+                value={dealerName}
+                readOnly
+                className="w-full mt-1 px-3 py-2 rounded-xl bg-[#020617] border border-dashed border-gray-800 text-gray-400 cursor-default"
+              />
+              <p className="text-[12px] text-gray-500 mt-1">
+                To change the legal store name, contact CarValueX support.
+              </p>
+            </div>
+
+            {/* Phone */}
+            <div>
+              <label className="text-base text-gray-300">Phone Number</label>
+              <input
+                type="text"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className="w-full mt-1 px-3 py-2 rounded-xl bg-[#020617] border border-gray-800 text-gray-200"
+              />
+            </div>
+
+            {/* Email */}
+            <div>
+              <label className="text-base text-gray-300">Primary Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full mt-1 px-3 py-2 rounded-xl bg-[#020617] border border-gray-800 text-gray-200"
+              />
+              <p className="text-[12px] text-gray-500 mt-1">
+                Used for new offers, bookings and billing receipts.
+              </p>
+            </div>
+
+            {/* Address */}
+            <div>
+              <label className="text-base text-gray-300">Showroom Address</label>
+              <input
+                type="text"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                className="w-full mt-1 px-3 py-2 rounded-xl bg-[#020617] border border-gray-800 text-gray-200"
+              />
+            </div>
+
+            {/* Website URL */}
+            <div>
+              <label className="text-base text-gray-300">Website URL</label>
+              <input
+                type="url"
+                value={website}
+                onChange={(e) => setWebsite(e.target.value)}
+                className="w-full mt-1 px-3 py-2 rounded-xl bg-[#020617] border border-gray-800 text-gray-200"
+              />
+            </div>
+
+            {/* Google Maps */}
+            <div>
+              <label className="text-base text-gray-300">Google Maps Link</label>
+              <input
+                type="url"
+                placeholder="https://maps.google.com/?q=CarBiz+Pickering"
+                value={maps}
+                onChange={(e) => setMaps(e.target.value)}
+                className="w-full mt-1 px-3 py-2 rounded-xl bg-[#020617] border border-gray-800 text-gray-200"
+              />
+              <p className="text-[12px] text-gray-500 mt-1">
+                Used on booking confirmations & reminder texts.
+              </p>
+            </div>
+
+            {/* Google Reviews */}
+            <div>
+              <label className="text-base text-gray-300">Google Reviews Link</label>
+              <input
+                type="url"
+                placeholder="https://g.page/r/XXXXX/review"
+                value={reviews}
+                onChange={(e) => setReviews(e.target.value)}
+                className="w-full mt-1 px-3 py-2 rounded-xl bg-[#020617] border border-gray-800 text-gray-200"
+              />
+              <p className="text-[12px] text-gray-500 mt-1">
+                Paste your official Google Reviews URL so CarValueX can
+                show your rating on selling pages.
+              </p>
+            </div>
+
+            {/* Logo */}
+            <div>
+              <label className="text-base text-gray-300">Dealer Logo</label>
+              <div className="flex gap-2">
+                <input
+                  type="url"
+                  value={logo}
+                  onChange={(e) => setLogo(e.target.value)}
+                  placeholder="https://…/logo.png"
+                  className="flex-1 px-3 py-2 rounded-xl bg-[#020617] border border-gray-800 text-gray-200"
+                />
+                <button className="px-4 py-2 rounded-full border border-gray-700 text-gray-300 hover:bg-gray-800">
+                  Upload
+                </button>
+              </div>
+              <p className="text-[12px] text-gray-500 mt-1">
+                Transparent PNG/SVG works best.
+              </p>
+            </div>
+
+            <Button className="mt-2">Save Dealer Profile</Button>
           </div>
-        </form>
-      </div>
-
-      {/* Divider */}
-      <div className='border-t border-border'></div>
-
-      {/* Change Password Section */}
-      <div className='bg-card border border-border rounded-lg p-6 sm:p-8'>
-        <div className='flex justify-between items-center mb-6'>
-          <h2 className='text-xl font-semibold text-foreground'>Change Password</h2>
-          {!showPasswordForm && (
-            <Button
-              onClick={() => setShowPasswordForm(true)}
-              className='px-4 py-2 border border-primary text-primary rounded-lg font-medium hover:bg-primary hover:text-primary-foreground transition'
-            >
-              Change Password
-            </Button>
-          )}
         </div>
 
-        {passwordUpdated && (
-          <div className='mb-4 p-4 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm'>
-            Password changed successfully!
+        {/* RIGHT CARD — License */}
+        <div className="rounded-2xl border border-[#111827] bg-[#020617] p-5">
+          <div className="mb-4">
+            <div className="uppercase tracking-wider text-base text-gray-400">
+              CarValueX License
+            </div>
+            <div className="text-[12px] text-gray-500 mt-1">
+              Your license powers your instant-offer pages and dashboard.
+            </div>
           </div>
-        )}
 
-        {showPasswordForm && (
-          <form onSubmit={handlePasswordChange} className='space-y-6'>
-            {/* Current Password */}
-            <div>
-              <label className='block text-sm font-medium text-foreground mb-2'>
-                Current Password
-              </label>
-              <input
-                type='password'
-                value={currentPassword}
-                onChange={e => setCurrentPassword(e.target.value)}
-                className='w-full px-4 py-2.5 border border-input rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition'
-                placeholder='Enter current password'
-                required
-              />
-            </div>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-green-700 bg-green-900/20 text-green-300 text-base">
+            <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+            Status: Active
+          </div>
 
-            {/* New Password */}
-            <div>
-              <label className='block text-sm font-medium text-foreground mb-2'>New Password</label>
-              <input
-                type='password'
-                value={newPassword}
-                onChange={e => setNewPassword(e.target.value)}
-                className='w-full px-4 py-2.5 border border-input rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition'
-                placeholder='Enter new password'
-                required
-              />
-            </div>
+          <div className="mt-3 p-3 border border-green-900 rounded-xl bg-green-950/20 text-green-200 text-base">
+            <strong>License Activated</strong>
+            <p>Your domain <code>https://carbiz.ca</code> is activated.</p>
+            <p>Key ending in <strong>***8893</strong>.</p>
+          </div>
 
-            {/* Confirm Password */}
-            <div>
-              <label className='block text-sm font-medium text-foreground mb-2'>
-                Confirm Password
-              </label>
-              <input
-                type='password'
-                value={confirmPassword}
-                onChange={e => setConfirmPassword(e.target.value)}
-                className='w-full px-4 py-2.5 border border-input rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition'
-                placeholder='Confirm new password'
-                required
-              />
-            </div>
+          <div className="flex justify-between text-base mt-3">
+            <span className="text-gray-400">Plan</span>
+            <span className="text-gray-200 font-medium">Per-Vehicle (CarValueX)</span>
+          </div>
 
-            {/* Action Buttons */}
-            <div className='flex gap-3 pt-4'>
-              <Button
-                type='submit'
-                className='px-6 py-2.5 bg-primary text-primary-foreground rounded-lg font-medium hover:opacity-90 transition focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2'
-              >
-                Update Password
-              </Button>
-              <button
-                type='button'
-                onClick={() => {
-                  setShowPasswordForm(false);
-                  setCurrentPassword('');
-                  setNewPassword('');
-                  setConfirmPassword('');
-                }}
-                className='px-6 py-2.5 border border-input text-foreground rounded-lg font-medium hover:bg-muted transition'
-              >
-                Cancel
-              </button>
-            </div>
-          </form>
-        )}
+          <div className="flex justify-between text-base mt-1">
+            <span className="text-gray-400">Bound To</span>
+            <span className="text-gray-200 font-medium">CarBiz – Pickering, ON</span>
+          </div>
+
+          <p className="text-[12px] text-gray-500 mt-4">
+            Your license is managed by CarValueX and cannot be edited.
+            To move this license to another domain, contact support.
+          </p>
+
+          <p className="text-[12px] text-gray-500 mt-3">
+            Need help?  
+            <a className="text-blue-300 ml-1" href="mailto:support@carvaluex.com">
+              support@carvaluex.com
+            </a>
+          </p>
+        </div>
+
       </div>
     </div>
   );

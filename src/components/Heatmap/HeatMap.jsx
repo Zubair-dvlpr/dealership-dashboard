@@ -11,11 +11,13 @@ const HeatMap = () => {
   const loading = useOffersStore(state => state?.heatMap?.loading);
 
   const totalOffers = offersList?.length;
-  const totalPurchased = offersList?.filter(o => {
+  const list = Array.isArray(offersList) ? offersList : [];
+  const totalPurchased = list.filter(o => {
     const median = Number(o?.median ?? 0);
     const final = Number(o?.finalOffer ?? 0);
     return median > 0 && final >= THRESH * median;
-  })?.length;
+  }).length;
+
 
   const conversionPct = totalOffers ? Math.round((totalPurchased / totalOffers) * 100) : 0;
 
@@ -29,7 +31,7 @@ const HeatMap = () => {
         <>
           {/* Map */}
           <div className='bg-blue w-full py-3 flex gap-4 px-3 border border-[#212332] rounded-[12px]'>
-            <Map locations={offersList} />
+            <Map locations={offersList || {}} />
           </div>
 
           {/* CARDS (dynamic) */}

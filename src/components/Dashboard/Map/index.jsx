@@ -8,7 +8,7 @@ export const MapLocations = ({ title = true }) => {
   const offersStore = useOffersStore();
 
   useEffect(() => {
-    offersStore?.offersListing();
+    offersStore?.offersBookedListing();
   }, []);
 
   if (offersStore?.list?.loading) {

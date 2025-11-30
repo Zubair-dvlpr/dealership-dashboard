@@ -11,11 +11,11 @@ const PostalOffersTable = ({ offers = [] }) => {
   };
 
   const citiesList = useMemo(() => {
-    if (!offers || offers.length === 0) return [];
-
+    if (!offers?.offers || offers?.offers.length === 0) return [];
+    
     const map = {};
 
-    offers.forEach(offer => {
+   offers?.offers.forEach(offer => {
       const city = offer?.geo?.city || 'Unknown';
       if (!map[city]) {
         map[city] = { city, offers: 0, purchased: 0 };
@@ -31,7 +31,7 @@ const PostalOffersTable = ({ offers = [] }) => {
       ...c,
       conv: c.offers > 0 ? ((c.purchased / c.offers) * 100).toFixed(1) : 0
     }));
-  }, [offers]);
+  }, [offers?.offers]);
 
   return (
     <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mt-6'>
@@ -56,6 +56,7 @@ const PostalOffersTable = ({ offers = [] }) => {
                 </td>
               </tr>
             )}
+            
             {offers.map((o, idx) => (
               <tr
                 key={o._id || idx}
