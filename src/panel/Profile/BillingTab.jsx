@@ -85,47 +85,47 @@ export default function BillingTabWrapper() {
   };
 
   return (
-    <Elements options={{ appearance }} stripe={stripePromise}>
-      <div className='w-full flex justify-center py-10  min-h-max'>
-        <div className='w-full max-w-lg p-6 rounded-xl  shadow-xl border border-[#1C2030]'>
-          <h2 className='text-2xl text-white mb-6 font-bold'>Payment Methods</h2>
+    <div className='w-full flex justify-center py-10  min-h-max'>
+      <div className='w-full max-w-lg p-6 rounded-xl  shadow-xl border border-[#1C2030]'>
+        <h2 className='text-2xl text-white mb-6 font-bold'>Payment Methods</h2>
 
-          {/* Loading State */}
-          {loading ? (
-            <div className='text-center text-gray-400 py-8'>Loading your cards...</div>
-          ) : (
-            <>
-              {/* Saved Cards List */}
-              <div className='space-y-4 mb-8'>
-                {hasCards ? (
-                  cards.map(pm => (
-                    <SavedCard
-                      key={pm.id}
-                      card={pm}
-                      isDefault={pm.is_default}
-                      onDelete={() => removeCard(pm.id)}
-                      onSetDefault={async () => {
-                        // await setDefaultCard(pm.id);
-                        fetchCards();
-                      }}
-                    />
-                  ))
-                ) : (
-                  <p className='text-gray-400 text-center py-8'>No payment methods added yet.</p>
-                )}
-              </div>
-
-              {/* Add New Card Section */}
-              {!addingNewCard ? (
-                <button
-                  onClick={createSetupIntent}
-                  disabled={processing}
-                  className='w-full py-4 border-2 border-dashed border-[#9BE7B4] rounded-xl text-[#9BE7B4] font-semibold hover:bg-[#9BE7B4]/10 transition'
-                >
-                  {processing ? 'Preparing...' : '+ Add New Card'}
-                </button>
+        {/* Loading State */}
+        {loading ? (
+          <div className='text-center text-gray-400 py-8'>Loading your cards...</div>
+        ) : (
+          <>
+            {/* Saved Cards List */}
+            <div className='space-y-4 mb-8'>
+              {hasCards ? (
+                cards.map(pm => (
+                  <SavedCard
+                    key={pm.id}
+                    card={pm}
+                    isDefault={pm.is_default}
+                    onDelete={() => removeCard(pm.id)}
+                    onSetDefault={async () => {
+                      // await setDefaultCard(pm.id);
+                      fetchCards();
+                    }}
+                  />
+                ))
               ) : (
-                clientSecret && (
+                <p className='text-gray-400 text-center py-8'>No payment methods added yet.</p>
+              )}
+            </div>
+
+            {/* Add New Card Section */}
+            {!addingNewCard ? (
+              <button
+                onClick={createSetupIntent}
+                disabled={processing}
+                className='w-full py-4 border-2 border-dashed border-[#9BE7B4] rounded-xl text-[#9BE7B4] font-semibold hover:bg-[#9BE7B4]/10 transition'
+              >
+                {processing ? 'Preparing...' : '+ Add New Card'}
+              </button>
+            ) : (
+              clientSecret && (
+                <Elements options={{ appearance, clientSecret }} stripe={stripePromise}>
                   <AddCardForm
                     onSuccess={() => {
                       setAddingNewCard(false);
@@ -137,13 +137,13 @@ export default function BillingTabWrapper() {
                       setClientSecret('');
                     }}
                   />
-                )
-              )}
-            </>
-          )}
-        </div>
+                </Elements>
+              )
+            )}
+          </>
+        )}
       </div>
-    </Elements>
+    </div>
   );
 }
 
