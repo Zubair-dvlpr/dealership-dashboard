@@ -6,6 +6,7 @@ import { showToast } from '../../components/shared/ShowToast';
 import { createPaymentIntent } from '../../store/features/stripe/stripeFns';
 import { loadStripe } from '@stripe/stripe-js';
 import { CardElement, Elements, useElements, useStripe } from '@stripe/react-stripe-js';
+import { purchaseOffer } from '../../store/features/offers/offersFns';
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
@@ -123,6 +124,7 @@ export const UpdateOfferModal = ({ open, onClose, row }) => {
 const StripePaymentModal = ({ open, onClose, row }) => {
   if (!open) return null;
   // STRIPE
+  const offersBookedListingFn = useOffersStore(state => state?.offersBookedListing);
   const stripe = useStripe();
 
   const [payIntentInfo, setPayIntentInfo] = useState(null);
@@ -152,13 +154,24 @@ const StripePaymentModal = ({ open, onClose, row }) => {
         payment_method: payIntentInfo?.paymentMethodId
       });
 
-      console.log('error', payIntent);
+      console.log('payIntent', payIntent);
       if (payIntent?.error) {
-        showToast(payIntent.error.message || 'Failed to confirm payment intent', 'error');
+        showToast(payIntent?.error?.message || 'Failed to confirm payment intent', 'error');
         setPaymentStatus('ready');
       } else if (payIntent.paymentIntent.status === 'succeeded') {
-        showToast('Payment Successful!', 'success');
-        setPaymentStatus('confirmed');
+        const _payIntent = await purchaseOffer({
+          offerId: row?._id,
+          paymentIntent: payIntent?.paymentIntent
+        });
+        if (_payIntent?.success) {
+          showToast('Payment Successful!', 'success');
+          setPaymentStatus('confirmed');
+          offersBookedListingFn();
+          onClose();
+        } else {
+          showToast(_payIntent?.error?.message || 'Failed to confirm payment intent', 'error');
+          setPaymentStatus('ready');
+        }
       }
     } catch (err) {
       setPaymentStatus('retry');

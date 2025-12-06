@@ -17,6 +17,8 @@ export const endpoints = {
   // OFFERS
   generatedList: `${baseURL}/offer/generated/list`,
   bookedList: `${baseURL}/offer/booked/list`,
+  updateOffer: `${baseURL}/offer/update`,
+  updatePurchaseOffer: `${baseURL}/offer/purchase`,
 
   heatmapoffersList: `${baseURL}/offer/list`,
 

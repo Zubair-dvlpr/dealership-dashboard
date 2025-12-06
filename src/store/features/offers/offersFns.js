@@ -15,7 +15,6 @@ export async function offersBookedList(params) {
 export async function offersGeneratedList(params) {
   try {
     const response = await axiosInstance.get(endpoints.generatedList, { params });
-    // console.log('Generated Offers List Response:', response?.data?.data);
     return { success: true, data: response?.data?.data };
   } catch (error) {
     return { success: false, error: error?.response?.data?.error || 'Something went wrong' };
@@ -24,16 +23,28 @@ export async function offersGeneratedList(params) {
 
 export async function updateOfferStatus(offerId, status) {
   try {
-    const response = await axiosInstance.put(`/offer/update/${offerId}`, {
+    const response = await axiosInstance.put(`${endpoints.updateOffer}/${offerId}`, {
       status
     });
 
     return { success: true, data: response.data };
   } catch (error) {
-    return { success: false, error: error?.response?.data || "Update failed" };
+    return { success: false, error: error?.response?.data || 'Update failed' };
   }
 }
 
+export async function purchaseOffer(params) {
+  const { offerId, ...rest } = params;
+  try {
+    const response = await axiosInstance.put(`${endpoints.updatePurchaseOffer}/${offerId}`, {
+      ...rest
+    });
+
+    return { success: true, data: response.data };
+  } catch (error) {
+    return { success: false, error: error?.response?.data || 'Update failed' };
+  }
+}
 
 export async function heatmapoffersList(params) {
   try {
