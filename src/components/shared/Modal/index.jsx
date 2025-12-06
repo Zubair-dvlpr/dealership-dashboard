@@ -1,7 +1,14 @@
 import { X } from 'lucide-react';
 import React, { useEffect } from 'react';
 
-export default function Modal({ isOpen, onClose, position = 'center', children, title }) {
+export default function Modal({
+  isOpen,
+  onClose,
+  position = 'center',
+  children,
+  title,
+  className
+}) {
   // Close modal on Escape key press
   useEffect(() => {
     const handleEscape = e => {
@@ -24,7 +31,8 @@ export default function Modal({ isOpen, onClose, position = 'center', children, 
   if (!isOpen) return null;
 
   const getModalClasses = () => {
-    const baseClasses = 'fixed w-full sm:w-lg p-2 bg-panel  transition-all duration-1000 ease-out';
+    const baseClasses =
+      'fixed w-full sm:w-lg p-2 bg-panel  transition-all duration-1000 ease-out' + className;
     switch (position) {
       case 'left':
         return `${baseClasses} top-1/2 right-0 z-50 translate-x-1 -translate-y-1/2 h-full`;

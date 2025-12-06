@@ -98,7 +98,6 @@ export const Appointments = () => {
     // Add filter logic here
     console.log('Filter:', filter);
   };
-// console.log('row in modal', row);
 
   return (
     <React.Fragment>
@@ -109,7 +108,6 @@ export const Appointments = () => {
           ) : (
             <StatsCards stats={stats} />
           )}
-
 
           {/* APPOINTMENTS LIST SECTION */}
           <div className='mb-4'>
@@ -129,10 +127,11 @@ export const Appointments = () => {
                   <button
                     key={filter}
                     onClick={() => handleFilterClick(filter)}
-                    className={`px-3 py-2 rounded-full text-xs border transition-colors ${activeFilter === filter
+                    className={`px-3 py-2 rounded-full text-xs border transition-colors ${
+                      activeFilter === filter
                         ? 'border-green-500 text-green-400 bg-green-900/20'
                         : 'border-gray-600 text-gray-400 bg-gray-800/50 hover:bg-gray-700/50'
-                      }`}
+                    }`}
                   >
                     {filter}
                   </button>
@@ -165,9 +164,8 @@ export const Appointments = () => {
       <UpdateOfferModal
         open={open.type === 'update'}
         onClose={() => setOpen({ type: '', data: {} })}
-        row={open?.data}
+        row={open.type === 'update' ? open?.data : null}
       />
-
     </React.Fragment>
   );
 };
