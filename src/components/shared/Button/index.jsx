@@ -4,7 +4,9 @@ import React from 'react';
 const VARIANTS = {
   primary: 'bg-panel text-ink hover:bg-panel/80',
   secondary: 'bg-gray-200 text-gray-800 hover:bg-gray-400',
-  danger: 'bg-red-600 text-white hover:bg-red-800'
+  danger: 'bg-red-600 text-white hover:bg-red-800',
+  text: 'bg-white/30  text-white hover:bg-gray-400',
+  success: 'bg-green-700  text-white hover:bg-green-900'
 };
 
 const Button = ({

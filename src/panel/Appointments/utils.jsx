@@ -3,6 +3,11 @@ import Modal from '../../components/shared/Modal';
 import { useOffersStore } from '../../store/features/offers/useOffersStore';
 import { Button } from '../../components/shared';
 import { showToast } from '../../components/shared/ShowToast';
+import { createPaymentIntent } from '../../store/features/stripe/stripeFns';
+import { loadStripe } from '@stripe/stripe-js';
+import { CardElement, Elements, useElements, useStripe } from '@stripe/react-stripe-js';
+
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 const ALL_STATUSES = [
   'pending',
@@ -20,7 +25,6 @@ export const UpdateOfferModal = ({ open, onClose, row }) => {
   const offersBookedListingFn = useOffersStore(state => state?.offersBookedListing);
 
   const updateState = useOffersStore(({ state }) => state?.update);
-  console.log('updateState', updateState);
 
   // STATES
   const current = row?.status?.toLowerCase();
@@ -56,7 +60,6 @@ export const UpdateOfferModal = ({ open, onClose, row }) => {
   };
 
   // CLICK TO PAY
-  const onClickToPay = async () => {};
 
   return (
     <React.Fragment>
@@ -106,19 +109,76 @@ export const UpdateOfferModal = ({ open, onClose, row }) => {
           </div>
         </div>
       </Modal>
-
-      <StripePaymentModal
-        open={isStripeModal}
-        onClose={() => setIsStripeModal(false)}
-        row={row}
-        onClickToPay={onClickToPay}
-      />
+      <Elements stripe={stripePromise}>
+        <StripePaymentModal
+          open={isStripeModal}
+          onClose={() => setIsStripeModal(false)}
+          row={row}
+        />
+      </Elements>
     </React.Fragment>
   );
 };
 
-const StripePaymentModal = ({ open, onClose, row, onClickToPay }) => {
+const StripePaymentModal = ({ open, onClose, row }) => {
   if (!open) return null;
+  // STRIPE
+  const stripe = useStripe();
+
+  const [payIntentInfo, setPayIntentInfo] = useState(null);
+  const [paymentStatus, setPaymentStatus] = useState('init');
+  const [paymentIntentLoading, setPaymentIntentLoading] = useState(false);
+
+  // CLICK TO PAY
+  const onClickCreatePaymentIntent = async () => {
+    setPaymentIntentLoading(true);
+    const data = await createPaymentIntent({ offerId: row?._id });
+    if (data?.success) {
+      setPayIntentInfo(data?.data);
+      setPaymentIntentLoading(false);
+      setPaymentStatus('ready');
+    } else {
+      setPaymentIntentLoading(false);
+      showToast(data?.data?.message || 'Failed to create payment intent', 'error');
+    }
+  };
+
+  const confirmPaymentIntent = async () => {
+    if (!payIntentInfo?.clientSecret || !stripe) return;
+
+    setPaymentStatus('processing');
+    try {
+      const payIntent = await stripe.confirmCardPayment(payIntentInfo?.clientSecret, {
+        payment_method: payIntentInfo?.paymentMethodId
+      });
+
+      console.log('error', payIntent);
+      if (payIntent?.error) {
+        showToast(payIntent.error.message || 'Failed to confirm payment intent', 'error');
+        setPaymentStatus('ready');
+      } else if (payIntent.paymentIntent.status === 'succeeded') {
+        showToast('Payment Successful!', 'success');
+        setPaymentStatus('confirmed');
+      }
+    } catch (err) {
+      setPaymentStatus('retry');
+    }
+  };
+
+  const onClickToPay = async () => {
+    if (!payIntentInfo?.clientSecret && paymentStatus === 'init') {
+      await onClickCreatePaymentIntent();
+    } else if (paymentStatus === 'ready') {
+      await confirmPaymentIntent();
+    }
+  };
+
+  const getPayButtonText = () => {
+    if (paymentStatus === 'init') return 'Pay Now';
+    if (paymentStatus === 'ready') return 'Confirm Payment';
+    if (paymentStatus === 'processing') return 'Processing...';
+    if (paymentStatus === 'confirmed') return 'Paid';
+  };
 
   const purchaseDate = new Date().toLocaleDateString();
   const purchaseTime = new Date().toLocaleTimeString();
@@ -186,12 +246,19 @@ const StripePaymentModal = ({ open, onClose, row, onClickToPay }) => {
 
         {/* FOOTER BUTTONS */}
         <div className='p-6 border-t border-border flex justify-end gap-3'>
-          <Button variant='secondary' onClick={onClose}>
+          <Button variant='text' onClick={onClose}>
             Cancel
           </Button>
 
-          <Button variant='primary' onClick={onClickToPay}>
-            Pay Now
+          <Button
+            variant={
+              paymentStatus === 'ready' || paymentStatus === 'confirmed' ? 'success' : 'secondary'
+            }
+            onClick={onClickToPay}
+            loading={paymentIntentLoading}
+            disabled={paymentIntentLoading || paymentStatus === 'confirmed'}
+          >
+            {getPayButtonText()}
           </Button>
         </div>
       </div>

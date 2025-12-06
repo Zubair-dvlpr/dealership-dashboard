@@ -3,14 +3,11 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import {
   addStripeCard,
-  createPaymentIntent,
   getStripeCard,
   removeStripeCard
 } from '../../store/features/stripe/stripeFns';
 
-const stripePromise = loadStripe(
-  'pk_test_51SUI5q2Z8WnZbLp4tnsz91vMy0o1bzJBGowaiMCc7hOd0TxbUKdDBnVfls2MddsNQ5WfNIQL9Xq7Yo2HOIxWIQ1M00lDEPhSJS'
-);
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 export default function BillingTabWrapper() {
   const [clientSecret, setClientSecret] = useState('');
@@ -38,7 +35,7 @@ export default function BillingTabWrapper() {
     try {
       setProcessing(true);
       const result = await addStripeCard();
-      console.log('SetupIntent Result:', result.data); 
+      console.log('SetupIntent Result:', result.data);
       if (result?.success && result.data?.clientSecret) {
         setClientSecret(result?.data?.clientSecret);
         setAddingNewCard(true);
